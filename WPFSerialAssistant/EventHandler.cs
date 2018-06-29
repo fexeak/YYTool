@@ -26,7 +26,7 @@ namespace WPFSerialAssistant
     {
         #region Global
         // 接收并显示的方式
-        private ReceiveMode receiveMode = ReceiveMode.Character;
+        private ReceiveMode receiveMode = ReceiveMode.Hex;
 
         // 发送的方式
         private SendMode sendMode = SendMode.Character;
@@ -137,7 +137,7 @@ namespace WPFSerialAssistant
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             WPFSerialAssistant.About about = new About();
-            about.ShowDialog();            
+            about.ShowDialog();
         }
 
         private void helpMenuItem_Click(object sender, RoutedEventArgs e)
@@ -401,10 +401,10 @@ namespace WPFSerialAssistant
             }
         }
 
-#endregion
+        #endregion
 
-#region EventHandler for serialPort
-        
+        #region EventHandler for serialPort
+
         // 数据接收缓冲区
         private List<byte> receiveBuffer = new List<byte>();
 
@@ -444,7 +444,8 @@ namespace WPFSerialAssistant
 
                 // 暂存缓冲区字节到全局缓冲区中等待处理
                 receiveBuffer.AddRange(tempBuffer);
-
+               
+                
                 if (receiveBuffer.Count >= THRESH_VALUE)
                 {
                     //Dispatcher.Invoke(new Action(() =>
@@ -452,27 +453,32 @@ namespace WPFSerialAssistant
                     //    recvDataRichTextBox.AppendText("Process data.\n");
                     //}));
                     // 进行数据处理，采用新的线程进行处理。
+                
+
+
                     Thread dataHandler = new Thread(new ParameterizedThreadStart(ReceivedDataHandler));
                     dataHandler.Start(receiveBuffer);
                 }
+
 
                 // 启动定时器，防止因为一直没有到达缓冲区字节阈值，而导致接收到的数据一直留存在缓冲区中无法处理。
                 StartCheckTimer();
 
                 this.Dispatcher.Invoke(new Action(() =>
-                {   
+                {
                     if (autoSendEnableCheckBox.IsChecked == false)
                     {
                         Information("");
-                    }                                 
+                    }
                     dataRecvStatusBarItem.Visibility = Visibility.Visible;
                 }));
+                                
             }
         }
 
-#endregion
+        #endregion
 
-#region 数据处理
+        #region 数据处理
 
         private void CheckTimer_Tick(object sender, EventArgs e)
         {
@@ -486,10 +492,48 @@ namespace WPFSerialAssistant
                 // 进行数据处理，采用新的线程进行处理。
                 Thread dataHandler = new Thread(new ParameterizedThreadStart(ReceivedDataHandler));
                 dataHandler.Start(receiveBuffer);
-            }          
+            }
         }
 
-
+        UInt64 GetUInt64(List<byte> buf, int index)
+        {
+            UInt64 rt = 0;
+            rt = (UInt64)buf[index] | ((UInt64)buf[index + 1] << 8) | ((UInt64)buf[index + 2] << 16)
+                        | ((UInt64)buf[index + 3] << 24) | ((UInt64)buf[index + 4] << 32) | ((UInt64)buf[index + 5] << 40)
+                        | ((UInt64)buf[index + 6] << 48) | ((UInt64)buf[index + 7] << 56);
+            return rt;
+        }
+        UInt32 GetUInt32(List<byte> buf, int index)
+        {
+            UInt32 rt = 0;
+            rt = (UInt32)buf[index] | ((UInt32)buf[index + 1] << 8) | ((UInt32)buf[index + 2] << 16)
+                        | ((UInt32)buf[index + 3] << 24);
+            return rt;
+        }
+        float GetFloat(List<byte> buf, int index)
+        {
+            float rt = 0;
+            rt = Convert.ToSingle(
+                        buf[index] | (buf[index + 1] << 8) | (buf[index + 2] << 16) | (buf[index + 3] << 24)
+                        );
+            return rt;
+        }
+        Byte GetByte(List<byte> buf, int index)
+        {
+            Byte rt = 0;
+            rt = Convert.ToByte(
+                buf[index]
+                );
+            return rt;
+        }
+        Int16 GetInt16(List<byte> buf, int index)
+        {
+            Int16 rt = 0;
+            rt = Convert.ToInt16(
+                buf[index] | (buf[index + 1] << 8)
+                );
+            return 0;
+        }
         private void ReceivedDataHandler(object obj)
         {
             List<byte> recvBuffer = new List<byte>();
@@ -513,51 +557,134 @@ namespace WPFSerialAssistant
                 }
 
                 dataRecvStatusBarItem.Visibility = Visibility.Collapsed;
+
+                //myTxt1.Text = $"收到数据长度: {recvBuffer.Count}";
             }));
 
             // TO-DO：
             // 处理数据，比如解析指令等等
             /*
-             * 
-             * FE XX XX 51 32 6A (44B) (2B)SUM
-             */
-            if (recvBuffer.Count > 6
-                && 0xFE == recvBuffer[0]
-                && 0x51 == recvBuffer[3]
-                && 0x32 == recvBuffer[4]
-                && 0x6A == recvBuffer[5]
-                )
+* 
+* FE XX XX 51 32 6A (44B) (2B)SUM
+*/
+            for (int i = 0; i < receiveBuffer.Count - 6;)
             {
-                if (52 == recvBuffer.Count)
+                if (0xFE == receiveBuffer[i]
+                    && 0x51 == receiveBuffer[i + 3]
+                    && 0x32 == receiveBuffer[i + 4]
+                    && 0x6A == receiveBuffer[i + 5]
+                    )
                 {
-                    UInt64 time_usec;
-                    UInt32 integration_time_us;
-                    float integrated_x;
-                    float integrated_y;
-                    float integrated_xgyro;
-                    float integrated_ygyro;
-                    float integrated_zgyro;
-                    UInt32 time_delta_distance_us;
-                    float distance;
-                    Int16 temperature;
-                    Byte sensor_id;
-                    Byte quality;
-                    int index = 6;
-                    time_usec = recvBuffer[index];
+                    int len = receiveBuffer[i + 1];
+                    switch (len)
+                    {
+                        case 44:
+                            {
+                                if (i + 6 + 44 > receiveBuffer.Count)
+                                {
+                                    goto flag1;
+                                }
+
+                                UInt64 time_usec = 0;
+                                UInt32 integration_time_us;
+                                float integrated_x;
+                                float integrated_y;
+                                float integrated_xgyro;
+                                float integrated_ygyro;
+                                float integrated_zgyro;
+                                UInt32 time_delta_distance_us;
+                                float distance;
+                                Int16 temperature;
+                                Byte sensor_id;
+                                Byte quality;
+
+                                int index = 6 + i;
+                                time_usec = GetUInt64(receiveBuffer, index + 0);
+                                integration_time_us = GetUInt32(receiveBuffer, index + 8);
+                                integrated_x = GetFloat(receiveBuffer, index + 12);
+                                integrated_y = GetFloat(receiveBuffer, index + 16);
+                                integrated_xgyro = GetFloat(receiveBuffer, index + 20);
+                                integrated_ygyro = GetFloat(receiveBuffer, index + 24);
+                                integrated_zgyro = GetFloat(receiveBuffer, index + 28);
+                                time_delta_distance_us = GetUInt32(receiveBuffer, index + 32);
+                                distance = GetFloat(receiveBuffer, index + 36);
+                                temperature = GetInt16(receiveBuffer, index + 40);
+                                sensor_id = GetByte(receiveBuffer, index + 42);
+                                quality = GetByte(receiveBuffer, index + 43);
+
+                                this.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    //if (showReceiveData)
+                                    {
+                                        // 根据显示模式显示接收到的字节.
+                                        myTxt1.Text = $"time_usec: {time_usec,10} integration_time_us: {integration_time_us,10} integrated_x: {integrated_x,10} integrated_y:{integrated_y,10}\n" +
+                                        $"integrated_xgyro: {integrated_xgyro,10} integrated_ygyro: {integrated_ygyro,10} integrated_zgyro:{integrated_zgyro,10}\n" +
+                                        $"time_delta_distance_us: {time_delta_distance_us,10} distance: {distance,10} temperature:{temperature,10} sensor_id: {sensor_id,10} quality:{quality,10}"
+                                        ;
+                                        //String txt = String.Format("time_usec:{0")
+                                    }
+
+                                    //dataRecvStatusBarItem.Visibility = Visibility.Collapsed;
+                                }));
+                            }
+                            i += 52;
+                            break;
+                        case 26:
+                            {
+                                if (i + 6 + 26 > receiveBuffer.Count)
+                                {
+                                    goto flag1;
+                                }
+
+                                UInt64 time_usec;
+                                float flow_comp_m_x;
+                                float flow_comp_m_y;
+                                float ground_distance;
+                                Int16 flow_x;
+                                Int16 flow_y;
+                                Byte sensor_id;
+                                Byte quality;
+
+                                int index = 6 + i;
+                                time_usec = GetUInt64(receiveBuffer, index + 0);
+                                flow_comp_m_x = GetFloat(receiveBuffer, index + 8);
+                                flow_comp_m_y = GetFloat(receiveBuffer, index + 12);
+                                ground_distance = GetFloat(receiveBuffer, index + 16);
+                                flow_x = GetInt16(receiveBuffer, index + 20);
+                                flow_y = GetInt16(receiveBuffer, index + 22);
+                                sensor_id = GetByte(receiveBuffer, index + 24);
+                                quality = GetByte(receiveBuffer, index + 25);
+
+                                this.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    //if (showReceiveData)
+                                    {
+                                        // 根据显示模式显示接收到的字节.
+                                        myTxt2.Text = $"time_usec: {time_usec,10} flow_comp_m_x: {flow_comp_m_x,10} flow_comp_m_y: {flow_comp_m_y,10} ground_distance:{ground_distance,10}\n" +
+                                        $"flow_x: {flow_x,10} flow_y: {flow_y,10} sensor_id:{sensor_id,10}\n" +
+                                        $"quality: {quality,10}"
+                                        ;
+                                    }
+                                }));
+                            }
+                            i += 34;
+                            break;
+                        default:
+                            i++;
+                            break;
+                    }
+
                 }
-                else if (34 == recvBuffer.Count)
+                else
                 {
-                    UInt64 time_usec;
-                    float flow_comp_m_x;
-                    float flow_comp_m_y;
-                    float ground_distance;
-                    Int16 flow_x;
-                    Int16 flow_y;
-                    Byte sensor_id;
-                    Byte quality;
+                    i++;
                 }
             }
+
+            flag1:
+            //receiveBuffer.Clear();
+            return;
         }
-#endregion
+        #endregion
     }
 }

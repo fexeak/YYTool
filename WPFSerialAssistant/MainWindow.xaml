@@ -86,10 +86,10 @@
                                     <ComboBoxItem>1200</ComboBoxItem>
                                     <ComboBoxItem>2400</ComboBoxItem>
                                     <ComboBoxItem>4800</ComboBoxItem>
-                                    <ComboBoxItem IsSelected="True">9600</ComboBoxItem>
+                                    <ComboBoxItem >9600</ComboBoxItem>
                                     <ComboBoxItem>19200</ComboBoxItem>
                                     <ComboBoxItem>38400</ComboBoxItem>
-                                    <ComboBoxItem>115200</ComboBoxItem>
+                                        <ComboBoxItem IsSelected="True">115200</ComboBoxItem>
                                 </ComboBox>
                             </Grid>
                             <!--奇偶校验位-->
@@ -187,10 +187,10 @@
                             </Grid.RowDefinitions>
                             <GroupBox Header="接收设置" Grid.Row="0" Margin="5"  BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}">
                                 <StackPanel>
-                                    <GroupBox Visibility="Hidden" Header="显示方式" Margin="5"  BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}">
+                                    <GroupBox Header="显示方式" Margin="5"  BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}">
                                         <StackPanel>
                                             <RadioButton Name="recvCharacterRadioButton" Tag="char" Margin="0,5"  Checked="recvModeButton_Checked">字符串</RadioButton>
-                                                <RadioButton Name="recvHexRadioButton" Tag="hex" Margin="0,0,50,5" IsChecked="True" Checked="recvModeButton_Checked">十六进制</RadioButton>
+                                            <RadioButton Name="recvHexRadioButton" Tag="hex" Margin="0,0,50,5" IsChecked="True" Checked="recvModeButton_Checked">十六进制</RadioButton>
                                             <RadioButton Name="recvDecRadioButton" Tag="dec" Margin="0,0,50,5" Checked="recvModeButton_Checked">十进制</RadioButton>
                                             <RadioButton Name="recvOctRadioButton" Tag="oct" Margin="0,0,50,5" Checked="recvModeButton_Checked">八进制</RadioButton>
                                             <RadioButton Name="recvBinRadioButton" Tag="bin" Margin="0,0,50,5" Checked="recvModeButton_Checked">二进制</RadioButton>
@@ -203,12 +203,12 @@
                                     </StackPanel>
                                 </StackPanel>
                             </GroupBox>
-                                <GroupBox Header="发送设置" Visibility="Hidden" Grid.Row="1" Margin="5" BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}" >
+                                <GroupBox Header="发送设置"  Grid.Row="1" Margin="5" BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}" >
                                 <StackPanel>
                                     <GroupBox Header="发送方式"  Margin="5,5,5,0"  BorderBrush="{Binding ElementName=serialPortConfigPanel, Path=BorderBrush}" BorderThickness="{Binding ElementName=serialPortConfigPanel, Path=BorderThickness}">
                                         <StackPanel>
-                                            <RadioButton Name="sendCharacterRadioButton" Tag="char" Click="sendDataModeRadioButton_Click" Content="字符串"  Margin="0,5"></RadioButton>
-                                                <RadioButton Name="sendHexRadioButton" Tag="hex" Click="sendDataModeRadioButton_Click" Content="十六进制" IsChecked="True" Margin="0,0,0,5"></RadioButton>
+                                                <RadioButton Name="sendCharacterRadioButton" Tag="char" Click="sendDataModeRadioButton_Click" Content="字符串" IsChecked="True" Margin="0,5"></RadioButton>
+                                                <RadioButton Name="sendHexRadioButton" Tag="hex" Click="sendDataModeRadioButton_Click" Content="十六进制"  Margin="0,0,0,5"></RadioButton>
                                         </StackPanel>
                                     </GroupBox>
                                  
