@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 //using System.Threading.Tasks;
 
-namespace WPFSerialAssistant
+namespace YYTools
 {
     public static class Utilities
     {

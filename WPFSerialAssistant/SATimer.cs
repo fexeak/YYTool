@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace WPFSerialAssistant
+namespace YYTools
 {
     public partial class MainWindow : Window
     {

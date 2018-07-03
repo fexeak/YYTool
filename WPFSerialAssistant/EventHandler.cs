@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 
-namespace WPFSerialAssistant
+namespace YYTools
 {
     public enum ReceiveMode
     {
@@ -136,7 +136,7 @@ namespace WPFSerialAssistant
 
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            WPFSerialAssistant.About about = new About();
+            YYTools.About about = new About();
             about.ShowDialog();
         }
 
@@ -513,9 +513,9 @@ namespace WPFSerialAssistant
         float GetFloat(List<byte> buf, int index)
         {
             float rt = 0;
-            rt = Convert.ToSingle(
-                        buf[index] | (buf[index + 1] << 8) | (buf[index + 2] << 16) | (buf[index + 3] << 24)
-                        );
+            //byte[] data = new byte[4]; ;
+            //buf.CopyTo(index, data, 0, 4);
+            rt = BitConverter.ToSingle(buf.ToArray(), index);
             return rt;
         }
         Byte GetByte(List<byte> buf, int index)
@@ -572,7 +572,6 @@ namespace WPFSerialAssistant
                 if (0xFE == receiveBuffer[i]
                     && 0x51 == receiveBuffer[i + 3]
                     && 0x32 == receiveBuffer[i + 4]
-                    && 0x6A == receiveBuffer[i + 5]
                     )
                 {
                     int len = receiveBuffer[i + 1];
@@ -580,7 +579,7 @@ namespace WPFSerialAssistant
                     {
                         case 44:
                             {
-                                if (i + 6 + 44 > receiveBuffer.Count)
+                                if (i + 52 > receiveBuffer.Count)
                                 {
                                     goto flag1;
                                 }
@@ -617,9 +616,9 @@ namespace WPFSerialAssistant
                                     //if (showReceiveData)
                                     {
                                         // 根据显示模式显示接收到的字节.
-                                        myTxt1.Text = $"time_usec: {time_usec,10} integration_time_us: {integration_time_us,10} integrated_x: {integrated_x,10} integrated_y:{integrated_y,10}\n" +
-                                        $"integrated_xgyro: {integrated_xgyro,10} integrated_ygyro: {integrated_ygyro,10} integrated_zgyro:{integrated_zgyro,10}\n" +
-                                        $"time_delta_distance_us: {time_delta_distance_us,10} distance: {distance,10} temperature:{temperature,10} sensor_id: {sensor_id,10} quality:{quality,10}"
+                                        myTxt1.Text = $"time_usec: {time_usec,10}    integration_time_us: {integration_time_us,10}    integrated_x: {integrated_x:0.00,8}\t integrated_y:{integrated_y:0.00,8}\n" +
+                                        $"integrated_xgyro: {integrated_xgyro:0.00,8}    integrated_ygyro: {integrated_ygyro:0.00,8}    integrated_zgyro:{integrated_zgyro:0.00,8}\n" +
+                                        $"time_delta_distance_us: {time_delta_distance_us,10}    distance: {distance,10}    temperature:{temperature,10}    sensor_id: {sensor_id,10}    quality:{quality,10}"
                                         ;
                                         //String txt = String.Format("time_usec:{0")
                                     }
@@ -631,7 +630,7 @@ namespace WPFSerialAssistant
                             break;
                         case 26:
                             {
-                                if (i + 6 + 26 > receiveBuffer.Count)
+                                if (i + 34 > receiveBuffer.Count)
                                 {
                                     goto flag1;
                                 }
@@ -660,8 +659,8 @@ namespace WPFSerialAssistant
                                     //if (showReceiveData)
                                     {
                                         // 根据显示模式显示接收到的字节.
-                                        myTxt2.Text = $"time_usec: {time_usec,10} flow_comp_m_x: {flow_comp_m_x,10} flow_comp_m_y: {flow_comp_m_y,10} ground_distance:{ground_distance,10}\n" +
-                                        $"flow_x: {flow_x,10} flow_y: {flow_y,10} sensor_id:{sensor_id,10}\n" +
+                                        myTxt2.Text = $"time_usec: {time_usec,10}    flow_comp_m_x: {flow_comp_m_x:0.00,8}    flow_comp_m_y: {flow_comp_m_y:0.00,8}    ground_distance:{ground_distance:0.00,8}\n" +
+                                        $"flow_x: {flow_x,10}    flow_y: {flow_y,10}    sensor_id:{sensor_id,10}\n" +
                                         $"quality: {quality,10}"
                                         ;
                                     }
