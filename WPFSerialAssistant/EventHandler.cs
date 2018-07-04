@@ -567,19 +567,19 @@ namespace YYTools
 * 
 * FE XX XX 51 32 6A (44B) (2B)SUM
 */
-            for (int i = 0; i < receiveBuffer.Count - 6;)
+            for (int i = 0; i < recvBuffer.Count - 6;)
             {
-                if (0xFE == receiveBuffer[i]
-                    && 0x51 == receiveBuffer[i + 3]
-                    && 0x32 == receiveBuffer[i + 4]
+                if (0xFE == recvBuffer[i]
+                    && 0x51 == recvBuffer[i + 3]
+                    && 0x32 == recvBuffer[i + 4]
                     )
                 {
-                    int len = receiveBuffer[i + 1];
+                    int len = recvBuffer[i + 1];
                     switch (len)
                     {
                         case 44:
                             {
-                                if (i + 52 > receiveBuffer.Count)
+                                if (i + 52 > recvBuffer.Count)
                                 {
                                     goto flag1;
                                 }
@@ -598,27 +598,37 @@ namespace YYTools
                                 Byte quality;
 
                                 int index = 6 + i;
-                                time_usec = GetUInt64(receiveBuffer, index + 0);
-                                integration_time_us = GetUInt32(receiveBuffer, index + 8);
-                                integrated_x = GetFloat(receiveBuffer, index + 12);
-                                integrated_y = GetFloat(receiveBuffer, index + 16);
-                                integrated_xgyro = GetFloat(receiveBuffer, index + 20);
-                                integrated_ygyro = GetFloat(receiveBuffer, index + 24);
-                                integrated_zgyro = GetFloat(receiveBuffer, index + 28);
-                                time_delta_distance_us = GetUInt32(receiveBuffer, index + 32);
-                                distance = GetFloat(receiveBuffer, index + 36);
-                                temperature = GetInt16(receiveBuffer, index + 40);
-                                sensor_id = GetByte(receiveBuffer, index + 42);
-                                quality = GetByte(receiveBuffer, index + 43);
+                                time_usec = GetUInt64(recvBuffer, index + 0);
+                                integration_time_us = GetUInt32(recvBuffer, index + 8);
+                                integrated_x = GetFloat(recvBuffer, index + 12);
+                                integrated_y = GetFloat(recvBuffer, index + 16);
+                                integrated_xgyro = GetFloat(recvBuffer, index + 20);
+                                integrated_ygyro = GetFloat(recvBuffer, index + 24);
+                                integrated_zgyro = GetFloat(recvBuffer, index + 28);
+                                time_delta_distance_us = GetUInt32(recvBuffer, index + 32);
+                                distance = GetFloat(recvBuffer, index + 36);
+                                temperature = GetInt16(recvBuffer, index + 40);
+                                sensor_id = GetByte(recvBuffer, index + 42);
+                                quality = GetByte(recvBuffer, index + 43);
 
                                 this.Dispatcher.Invoke(new Action(() =>
                                 {
                                     //if (showReceiveData)
                                     {
                                         // 根据显示模式显示接收到的字节.
-                                        myTxt1.Text = $"time_usec: {time_usec,10}    integration_time_us: {integration_time_us,10}    integrated_x: {integrated_x:0.00,8}\t integrated_y:{integrated_y:0.00,8}\n" +
-                                        $"integrated_xgyro: {integrated_xgyro:0.00,8}    integrated_ygyro: {integrated_ygyro:0.00,8}    integrated_zgyro:{integrated_zgyro:0.00,8}\n" +
-                                        $"time_delta_distance_us: {time_delta_distance_us,10}    distance: {distance,10}    temperature:{temperature,10}    sensor_id: {sensor_id,10}    quality:{quality,10}"
+                                        myTxt1.Text = 
+                                        $"time_usec: {time_usec,10}  " +
+                                        $"integration_time_us: {integration_time_us,10}  " +
+                                        $"integrated_x: {integrated_x:0.00,8}  " +
+                                        $"integrated_y:{integrated_y:0.00,8}  \n" +
+                                        $"integrated_xgyro: {integrated_xgyro:0.00,8}  " +
+                                        $"integrated_ygyro: {integrated_ygyro:0.00,8}  " +
+                                        $"integrated_zgyro:{integrated_zgyro:0.00,8}  " +
+                                        $"time_delta_distance_us: {time_delta_distance_us,10}  " +
+                                        $"distance: {distance,10}  " +
+                                        $"temperature:{temperature,10}  \n" +
+                                        $"sensor_id: {sensor_id,10}  " +
+                                        $"quality:{quality,10}  "
                                         ;
                                         //String txt = String.Format("time_usec:{0")
                                     }
@@ -630,7 +640,7 @@ namespace YYTools
                             break;
                         case 26:
                             {
-                                if (i + 34 > receiveBuffer.Count)
+                                if (i + 34 > recvBuffer.Count)
                                 {
                                     goto flag1;
                                 }
@@ -645,23 +655,28 @@ namespace YYTools
                                 Byte quality;
 
                                 int index = 6 + i;
-                                time_usec = GetUInt64(receiveBuffer, index + 0);
-                                flow_comp_m_x = GetFloat(receiveBuffer, index + 8);
-                                flow_comp_m_y = GetFloat(receiveBuffer, index + 12);
-                                ground_distance = GetFloat(receiveBuffer, index + 16);
-                                flow_x = GetInt16(receiveBuffer, index + 20);
-                                flow_y = GetInt16(receiveBuffer, index + 22);
-                                sensor_id = GetByte(receiveBuffer, index + 24);
-                                quality = GetByte(receiveBuffer, index + 25);
+                                time_usec = GetUInt64(recvBuffer, index + 0);
+                                flow_comp_m_x = GetFloat(recvBuffer, index + 8);
+                                flow_comp_m_y = GetFloat(recvBuffer, index + 12);
+                                ground_distance = GetFloat(recvBuffer, index + 16);
+                                flow_x = GetInt16(recvBuffer, index + 20);
+                                flow_y = GetInt16(recvBuffer, index + 22);
+                                sensor_id = GetByte(recvBuffer, index + 24);
+                                quality = GetByte(recvBuffer, index + 25);
 
                                 this.Dispatcher.Invoke(new Action(() =>
                                 {
                                     //if (showReceiveData)
                                     {
                                         // 根据显示模式显示接收到的字节.
-                                        myTxt2.Text = $"time_usec: {time_usec,10}    flow_comp_m_x: {flow_comp_m_x:0.00,8}    flow_comp_m_y: {flow_comp_m_y:0.00,8}    ground_distance:{ground_distance:0.00,8}\n" +
-                                        $"flow_x: {flow_x,10}    flow_y: {flow_y,10}    sensor_id:{sensor_id,10}\n" +
-                                        $"quality: {quality,10}"
+                                        myTxt2.Text = $"time_usec: {time_usec,10}  " +
+                                        $"flow_comp_m_x: {flow_comp_m_x:0.00,8}  " +
+                                        $"flow_comp_m_y: {flow_comp_m_y:0.00,8}  \n" +
+                                        $"ground_distance:{ground_distance:0.00,8}  " +
+                                        $"flow_x: {flow_x,10}  " +
+                                        $"flow_y: {flow_y,10}  \n" +
+                                        $"sensor_id:{sensor_id,10}  " +
+                                        $"quality: {quality,10}  "
                                         ;
                                     }
                                 }));
