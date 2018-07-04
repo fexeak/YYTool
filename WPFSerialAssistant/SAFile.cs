@@ -8,7 +8,7 @@ using System.IO;
 using System.Windows.Documents;
 using Microsoft.Win32;
 
-namespace WPFSerialAssistant
+namespace YYTools
 {
     public partial class MainWindow : Window
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WPFSerialAssistant
+namespace YYTools
 {
     public partial class MainWindow : Window
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{DA01B86D-5BC1-4863-BAAC-71B309B09CC0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WPFSerialAssistant</RootNamespace>
+    <RootNamespace>YYTool</RootNamespace>
     <AssemblyName>YYTool</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
