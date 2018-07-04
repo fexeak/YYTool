@@ -572,7 +572,6 @@ namespace WPFSerialAssistant
                 if (0xFE == receiveBuffer[i]
                     && 0x51 == receiveBuffer[i + 3]
                     && 0x32 == receiveBuffer[i + 4]
-                    && 0x6A == receiveBuffer[i + 5]
                     )
                 {
                     int len = receiveBuffer[i + 1];
