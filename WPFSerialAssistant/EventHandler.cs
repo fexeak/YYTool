@@ -569,7 +569,7 @@ namespace YYTools
 */
             for (int i = 0; i < recvBuffer.Count - 6;)
             {
-                if (0xFE == recvBuffer[i]
+                 if (0xFE == recvBuffer[i]
                     && 0x51 == recvBuffer[i + 3]
                     && 0x32 == recvBuffer[i + 4]
                     )
@@ -617,17 +617,17 @@ namespace YYTools
                                     {
                                         // 根据显示模式显示接收到的字节.
                                         myTxt1.Text = 
-                                        $"time_usec: {time_usec,10}  " +
-                                        $"integration_time_us: {integration_time_us,10}  " +
-                                        $"integrated_x: {integrated_x:0.00,8}  " +
+                                        $"time_usec: {time_usec,10}  \n" +
+                                        $"integration_time_us: {integration_time_us,10}  \n" +
+                                        $"integrated_x: {integrated_x:0.00,8}  \n" +
                                         $"integrated_y:{integrated_y:0.00,8}  \n" +
-                                        $"integrated_xgyro: {integrated_xgyro:0.00,8}  " +
-                                        $"integrated_ygyro: {integrated_ygyro:0.00,8}  " +
-                                        $"integrated_zgyro:{integrated_zgyro:0.00,8}  " +
-                                        $"time_delta_distance_us: {time_delta_distance_us,10}  " +
-                                        $"distance: {distance,10}  " +
+                                        $"integrated_xgyro: {integrated_xgyro:0.00,8}  \n" +
+                                        $"integrated_ygyro: {integrated_ygyro:0.00,8}  \n" +
+                                        $"integrated_zgyro: {integrated_zgyro:0.00,8}  \n" +
+                                        $"time_delta_distance_us: {time_delta_distance_us,10}  \n" +
+                                        $"distance: {distance,10}  \n" +
                                         $"temperature:{temperature,10}  \n" +
-                                        $"sensor_id: {sensor_id,10}  " +
+                                        $"sensor_id: {sensor_id,10}  \n" +
                                         $"quality:{quality,10}  "
                                         ;
                                         //String txt = String.Format("time_usec:{0")
@@ -638,6 +638,7 @@ namespace YYTools
                             }
                             i += 52;
                             break;
+                            /*
                         case 26:
                             {
                                 if (i + 34 > recvBuffer.Count)
@@ -669,13 +670,13 @@ namespace YYTools
                                     //if (showReceiveData)
                                     {
                                         // 根据显示模式显示接收到的字节.
-                                        myTxt2.Text = $"time_usec: {time_usec,10}  " +
-                                        $"flow_comp_m_x: {flow_comp_m_x:0.00,8}  " +
+                                        myTxt2.Text = $"time_usec: {time_usec,10}  \n" +
+                                        $"flow_comp_m_x: {flow_comp_m_x:0.00,8}  \n" +
                                         $"flow_comp_m_y: {flow_comp_m_y:0.00,8}  \n" +
-                                        $"ground_distance:{ground_distance:0.00,8}  " +
-                                        $"flow_x: {flow_x,10}  " +
+                                        $"ground_distance:{ground_distance:0.00,8}  \n" +
+                                        $"flow_x: {flow_x,10}  \n" +
                                         $"flow_y: {flow_y,10}  \n" +
-                                        $"sensor_id:{sensor_id,10}  " +
+                                        $"sensor_id:{sensor_id,10}  \n" +
                                         $"quality: {quality,10}  "
                                         ;
                                     }
@@ -683,6 +684,7 @@ namespace YYTools
                             }
                             i += 34;
                             break;
+                            */
                         default:
                             i++;
                             break;
